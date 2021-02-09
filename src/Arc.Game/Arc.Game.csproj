@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Arc.Database\Arc.Database.csproj" />
+    <ProjectReference Include="..\Arc.Network\Arc.Network.csproj" />
+  </ItemGroup>
+
+</Project>
