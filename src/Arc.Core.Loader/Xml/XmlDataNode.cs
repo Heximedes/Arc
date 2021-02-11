@@ -20,7 +20,7 @@ namespace Arc.Core.Loader.Xml
 
         public string Name => _xmlElement.FirstAttribute.Value;
 
-
+        public IEnumerable<XmlDataNode> Children => _xmlElement.Elements().Select(c => new XmlDataNode(c));
         public XmlDataNode Resolve(string path = null)
             => new XmlDataNode(_xmlElement.Elements().Single(n => n.FirstAttribute.Value == path));
         
@@ -31,6 +31,21 @@ namespace Arc.Core.Loader.Xml
              => context.Invoke(ResolveAll());
         
         public T? Resolve<T>(string path = null) where T : struct
-            => (T?)Convert.ChangeType(_xmlElement.Elements().Single(n => n.FirstAttribute.Value == path).LastAttribute.Value, typeof(T));
+        {
+            var result = _xmlElement.Elements().SingleOrDefault(n => n.FirstAttribute.Value == path)?.LastAttribute.Value;
+            if (result is IConvertible)
+            {
+                if (typeof(T) == typeof(bool))
+                {
+                    return result == "0" ? (T)(object)false : (T)(object)true;
+                }
+                return (T)Convert.ChangeType(result, typeof(T));
+            }
+            return null;
+        }
+          
+
+        public string ResolveString(string path = null)
+            => _xmlElement.Elements().SingleOrDefault(n => n.FirstAttribute.Value == path)?.LastAttribute.Value;
     }
 }
